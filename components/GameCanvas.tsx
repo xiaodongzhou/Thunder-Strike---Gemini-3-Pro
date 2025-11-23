@@ -5,7 +5,7 @@ import {
   CANVAS_WIDTH, 
   CANVAS_HEIGHT, 
   PLAYER_SPEED, 
-  PLAYER_SIZE,
+  PLAYER_SIZE, 
   PLAYER_MAX_HP,
   FIRE_RATE_MAIN,
   FIRE_RATE_MISSILE,
@@ -238,11 +238,42 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, setGameState, setSco
     if (keys.has('ArrowRight')) player.x = Math.min(CANVAS_WIDTH - player.width, player.x + PLAYER_SPEED);
 
     // --- Shooting ---
-    // Main Gun (Auto)
+    // Main Gun (Auto) - TRIPLE SHOT
     if (timestamp - player.lastShotTime > FIRE_RATE_MAIN) {
+      // Center
       bulletsRef.current.push({
         x: player.x + player.width / 2 - 2,
         y: player.y,
+        width: 4,
+        height: 12,
+        vx: 0,
+        vy: -BULLET_SPEED_MAIN,
+        hp: 1,
+        maxHp: 1,
+        color: COLORS.playerBullet,
+        damage: MAIN_GUN_DAMAGE,
+        type: BulletType.PLAYER_MAIN,
+        active: true
+      });
+      // Left
+      bulletsRef.current.push({
+        x: player.x + 4,
+        y: player.y + 12,
+        width: 4,
+        height: 12,
+        vx: 0,
+        vy: -BULLET_SPEED_MAIN,
+        hp: 1,
+        maxHp: 1,
+        color: COLORS.playerBullet,
+        damage: MAIN_GUN_DAMAGE,
+        type: BulletType.PLAYER_MAIN,
+        active: true
+      });
+      // Right
+      bulletsRef.current.push({
+        x: player.x + player.width - 8,
+        y: player.y + 12,
         width: 4,
         height: 12,
         vx: 0,
@@ -574,6 +605,11 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, setGameState, setSco
       ctx.lineTo(0, player.height/2 - 12); 
       ctx.lineTo(-8, player.height/2 - 5); 
       ctx.fill();
+
+      // Extra Gun Barrels (Visuals for Triple Shot)
+      ctx.fillStyle = '#94a3b8'; // Slate 400
+      ctx.fillRect(-player.width/2 + 2, player.height/2 - 15, 6, 12); // Left
+      ctx.fillRect(player.width/2 - 8, player.height/2 - 15, 6, 12);  // Right
 
       // Cockpit
       ctx.fillStyle = '#1e293b'; // Dark Slate
